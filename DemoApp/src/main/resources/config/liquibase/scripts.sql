@@ -1,6 +1,6 @@
 use DemoApp;
 
-CREATE  TABLE `gcs_3`.`jhi_user` (
+CREATE  TABLE `jhi_user` (
   `id` BIGINT(20) NOT NULL ,
   `login` VARCHAR(45) NULL DEFAULT NULL ,
   `password_hash` VARCHAR(45) NULL ,
@@ -21,11 +21,11 @@ CREATE  TABLE `gcs_3`.`jhi_user` (
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) );
 
 
-CREATE  TABLE `gcs_3`.`jhi_authority` (
+CREATE  TABLE `jhi_authority` (
   `name` VARCHAR(50) NULL DEFAULT NULL ,
   PRIMARY KEY (`name`) );
 
-CREATE  TABLE `gcs_3`.`jhi_persistent_audit_event` (
+CREATE  TABLE `jhi_persistent_audit_event` (
   `event_id` BIGINT(20) NULL DEFAULT NULL ,
   `principal` VARCHAR(255) NULL DEFAULT NULL ,
   `event_date` TIMESTAMP NULL DEFAULT NULL ,
@@ -33,14 +33,14 @@ CREATE  TABLE `gcs_3`.`jhi_persistent_audit_event` (
   PRIMARY KEY (`event_id`) );
 
 
-CREATE  TABLE `gcs_3`.`jhi_persistent_audit_evt_data` (
+CREATE  TABLE `jhi_persistent_audit_evt_data` (
   `event_id` BIGINT(20) NOT NULL ,
   `name` VARCHAR(45) NOT NULL ,
   `value` VARCHAR(45) NULL ,
   PRIMARY KEY (`event_id`) );
 
 
-CREATE  TABLE `gcs_3`.`jhi_user_authority` (
+CREATE  TABLE `jhi_user_authority` (
   `user_id` BIGINT(20) NOT NULL ,
   `authority_name` VARCHAR(45) NOT NULL ,
   PRIMARY KEY (`user_id`, `authority_name`) );
