@@ -47,5 +47,5 @@ CREATE  TABLE `jhi_user_authority` (
 
 
 insert into jhi_user(login,password_hash,first_name,last_name,email,activated,lang_key,activation_key,reset_key,created_by,created_date,reset_date,last_modified_by,last_modified_date) values
-('system','$2a$10$mE.qmcV0mFU5NcKh73TZx.z4ueI/.bDWbj0T1BYyqP481kGGarKLG','System','System','system@localhost','yes','en','NULL','NULL','system',now(),'NULL','NULL');
+('system','$2a$10$mE.qmcV0mFU5NcKh73TZx.z4ueI/.bDWbj0T1BYyqP481kGGarKLG','System','System','system@localhost','yes','en','NULL','NULL','system',now(),now(),'NULL','NULL');
  
