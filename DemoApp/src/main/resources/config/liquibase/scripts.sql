@@ -1,5 +1,3 @@
-create database DemoApp;
-
 use DemoApp;
 
 CREATE  TABLE `gcs_3`.`jhi_user` (
