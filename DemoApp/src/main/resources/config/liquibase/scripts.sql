@@ -1,4 +1,4 @@
-use DemoApp;
+use demo;
 
 CREATE  TABLE `jhi_user` (
   `id` BIGINT(20) NOT NULL ,
@@ -45,7 +45,10 @@ CREATE  TABLE `jhi_user_authority` (
   `authority_name` VARCHAR(45) NOT NULL ,
   PRIMARY KEY (`user_id`, `authority_name`) );
 
-
 insert into jhi_user(login,password_hash,first_name,last_name,email,activated,lang_key,activation_key,reset_key,created_by,created_date,reset_date,last_modified_by,last_modified_date) values
 ('system','$2a$10$mE.qmcV0mFU5NcKh73TZx.z4ueI/.bDWbj0T1BYyqP481kGGarKLG','System','System','system@localhost','yes','en','NULL','NULL','system',now(),now(),'NULL','NULL');
  
+insert into `jhi_user_authority`(user_id,`authority_name`) values(1,'ROLE_ADMIN');
+
+insert into `jhi_authority`(name) values('ROLE_ADMIN');
+
