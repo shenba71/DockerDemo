@@ -11,7 +11,8 @@ buildscript {
         classpath group: 'org.springframework.boot', name: 'spring-boot-gradle-plugin', version: spring_boot_version
         classpath group: 'org.springframework.build.gradle', name: 'propdeps-plugin', version: '0.0.7'
         classpath group: 'com.moowork.gradle', name: 'gradle-node-plugin', version: '0.11'
-        classpath group: 'com.moowork.gradle', name: 'gradle-grunt-plugin', version: '0.11'
+        classpath group: 'com.moowork.gradle', name: 'gradle-grunt-plugin', version: '0.11'		
+		classpath group: 'com.bmuschko', name: 'gradle-docker-plugin', version: '2.6.7'
         //jhipster-needle-gradle-buildscript-dependency - JHipster will add additional gradle build script plugins here
     }
 }
@@ -21,16 +22,11 @@ sourceCompatibility=1.8
 targetCompatibility=1.8
 apply plugin: 'maven'
 apply plugin: 'spring-boot'
-apply plugin: 'war'
 apply plugin: 'propdeps'
 defaultTasks 'bootRun'
 
 bootRepackage {
    mainClass = 'com.demo.demoapp.Application'
-}
-
-war {
-    rootSpec.exclude("**/tomcat-*.jar")
 }
 
 springBoot {
@@ -186,3 +182,33 @@ task wrapper(type: Wrapper) {
 
 task stage(dependsOn: 'bootRepackage') {
 }
+
+// Docker configurations
+apply plugin: 'com.bmuschko.docker-remote-api'
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
+task copyJarFile(dependsOn: build){
+	doFirst {
+		copy {
+		  from jar
+		  into 'build\\docker'
+		}
+	}
+}
+
+task buildDockerfile (type: Dockerfile) {
+	// copy JAR file to docker build location
+	dependsOn copyJarFile	
+	
+	// instrustions for docker file
+	from 'java:8'
+	addFile "demoapp-${project.version}.jar", "app.jar"
+	runCommand "bash -c 'touch app.jar'"
+	entryPoint "java","-Djava.security.egd=file:/dev/./urandom","-jar","app.jar"
+	
+}
+
+task buildDockerImage (type: Exec) {
+		dependsOn buildDockerfile
+		commandLine "docker", "build", "-t", "demoapp/test:v1", "build\\docker"
+} 
