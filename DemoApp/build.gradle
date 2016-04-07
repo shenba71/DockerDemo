@@ -70,8 +70,10 @@ if (project.hasProperty('prod')) {
 
 group = 'com.demo.demoapp'
 version = '0.0.1-SNAPSHOT'
+// Local variables
+def dockerfile_src_path = 'src' + File.separator + 'main' + File.separator + 'docker'
+def dockerfile_dest_path = 'build' + File.separator + 'docker'
 
-description = ''
 
 configurations {
     providedRuntime
@@ -184,31 +186,27 @@ task stage(dependsOn: 'bootRepackage') {
 }
 
 // Docker configurations
-apply plugin: 'com.bmuschko.docker-remote-api'
-import com.bmuschko.gradle.docker.tasks.image.Dockerfile
-
-task copyJarFile(dependsOn: build){
+task copyDockerDependencyFiles(dependsOn: build){
 	doFirst {
 		copy {
 		  from jar
-		  into 'build\\docker'
+		  into dockerfile_dest_path
+		}
+		copy {
+		  from dockerfile_src_path
+		  into dockerfile_dest_path
+		  exclude '**/*.yml'
 		}
 	}
 }
 
-task buildDockerfile (type: Dockerfile) {
-	// copy JAR file to docker build location
-	dependsOn copyJarFile	
-	
-	// instrustions for docker file
-	from 'java:8'
-	addFile "demoapp-${project.version}.jar", "app.jar"
-	runCommand "bash -c 'touch app.jar'"
-	entryPoint "java","-Djava.security.egd=file:/dev/./urandom","-jar","app.jar"
-	
+// Tag name needs to be provided dynamically once the name is certified
+task buildDockerImage (type: Exec) {
+		dependsOn copyDockerDependencyFiles
+		commandLine "docker", "build", "-t", "demoapp/test:v1", "--build-arg", "BUILD_VERSION=${project.version}", dockerfile_dest_path
 }
 
-task buildDockerImage (type: Exec) {
-		dependsOn buildDockerfile
-		commandLine "docker", "build", "-t", "demoapp/test:v1", "build\\docker"
-} 
+task deployDockerImage (type: Exec) {
+		dependsOn buildDockerImage
+		commandLine "docker", "run", "-p", "8080:8080", "-t", "demoapp/test:v1"
+}
